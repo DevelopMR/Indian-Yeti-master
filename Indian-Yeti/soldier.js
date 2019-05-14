@@ -20,7 +20,8 @@ class Soldier{
         this.velY = (1 + random(2))*this.coinfFlip();
 
 
-        this.visible = true; // start false
+        this.visible = false; // start false
+        this.heatVisible = false;
         this.alert = false;
         this.alertVel = .25;
         this.enemy = enemy;
@@ -38,12 +39,22 @@ class Soldier{
     show() {
 
         if (this.visible){
-            image(soldierSprite, this.x - this.halfsize, this.y - this.halfsize);
-
-/*             stroke(255,0,0);
-            fill(0,0,0,0);
-            arc(this.x, this.y, this.vision*2, this.vision*2, 0, TWO_PI); */
+            image(soldierSeeSprite, this.x - this.halfsize, this.y - this.halfsize);
         }
+        else if (this.heatVisible) {
+            image(soldierHeatSprite, this.x - this.halfsize, this.y - this.halfsize);
+        } else {
+            image(soldierGhostSprite, this.x - this.halfsize, this.y - this.halfsize);
+        }
+
+        if (this.enemy.isBest){
+            stroke(255,0,0);
+            strokeWeight(1);
+            fill(0,0,0,0);
+            arc(this.x, this.y, this.vision*2, this.vision*2, 0, TWO_PI);
+        }
+
+
     }
 
     update() {
@@ -118,14 +129,38 @@ class Soldier{
 
     // borders, other soldiers, trail, cave, camp
     collision(){
-        // boundary
-        if (this.x - this.halfsize < 0 || this.x + this.halfsize > 1180) {
+        // 6 point boundary
+        if (this.x - this.halfsize < 6 || this.x + this.halfsize > 1174) {
             this.velX = -this.velX;
         }
-        if (this.y - this.halfsize < 0 || this.y + this.halfsize > 900) {
+        if (this.y - this.halfsize < 6 || this.y + this.halfsize > 894) {
             this.velY = -this.velY;
         }
 
+    }
+
+    detected(p){
+
+        var retRes = false;
+
+        var xDel = p.x - this.x;
+        var yDel = p.y - this.y;
+
+        var leftHalf = (sq(xDel) + sq(yDel));
+        
+        this.visible = false;
+        this.heatVisible = false;
+        if (leftHalf <= p.seeSquared) { 
+            this.visible = true; 
+            retRes = true;
+        }
+
+        if (leftHalf <= p.seeSquaredHeat) { 
+            this.heatVisible = true; 
+            retRes = true;
+        }
+        
+        return retRes;
     }
 
 }

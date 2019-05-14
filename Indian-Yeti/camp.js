@@ -1,8 +1,8 @@
 class Camp {
     constructor(){
         this.size = 50;
-        this.x = 835 + random(295); 
-        this.y = this.size + random(800); 
+        this.x = 1075; //835 + random(295); 
+        this.y = 100; //this.size + random(800); 
         
         this.food = 1000;
 
@@ -14,8 +14,6 @@ class Camp {
         if (this.discovered){
             image(campSprite, this.x - this.size/2 , this.y - this.size/2);
         }
-
-        
 
     }
 
@@ -30,7 +28,7 @@ class Camp {
         if (leftHalf <= rightHalf) {
              if (!this.discovered){
                 this.discovered = true;
-                p.score += 400;
+                p.score += 200; // 2000
              }
         }
 
@@ -49,12 +47,12 @@ class Camp {
             
 
                 if ((p.food < 100)&&(this.food > 1)) {
-                    p.score+=50;
+                    p.score+=10;
                     p.food++;
                     this.food--;
                 }
 
-                p.score+=50;
+                p.score+=10;
             }
         }
   

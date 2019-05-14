@@ -39,6 +39,17 @@ class Army {
 
     }
 
+    detected(p){
+        var result = false;
+        this.soldiers.forEach(soldier => {
+            if (soldier.detected(p)){
+                result = true;
+            }
+        })
 
+        return result;
+
+
+    }
 
 }

@@ -40,7 +40,11 @@ function preload() {
 
     yetiSprite = loadImage("images/yeti.png");
     bestYetiSprite = loadImage("images/yeti.png");
-    soldierSprite = loadImage("images/soldier.png");
+
+    soldierSeeSprite = loadImage("images/soldierSee.png");
+    soldierHeatSprite = loadImage("images/soldierHeat.png");
+    soldierGhostSprite = loadImage("images/soldierGhost.png");
+
     caveSprite = loadImage("images/cave.png");
     campSprite = loadImage("images/camp.png");
     backgroundSprite = loadImage("images/background.png");
@@ -48,7 +52,7 @@ function preload() {
 }
 
 function setup() {
-  window.canvas = createCanvas(1280, 1024); 
+  window.canvas = createCanvas(1635, 900); 
   player = new Yeti();
   pauseBecauseDead = false;
 
@@ -139,6 +143,9 @@ function showBestEverPlayer() {
 function drawToScreen() {
   if (!showNothing) {
     //pretty stuff
+
+    //fill(150,150,150);
+    //rect(0, 0, canvas.width, canvas.height);
     image(backgroundSprite, 0, 0, 1180, 900);
 
 
@@ -151,10 +158,15 @@ function drawToScreen() {
 }
 //---------------------------------------
 function drawBrain() { //show the brain of whatever genome is currently showing
-  var startX = 850; 
-  var startY = 600;
-  var w = 300;
-  var h = 250;
+
+  strokeWeight(0);
+  fill(150,150,150);
+  rect(1180, 0, canvas.width, canvas.height);
+
+  var startX = 1170; 
+  var startY = 10;
+  var w = 450;
+  var h = 475;
 
   if (runBest) {
     population.bestPlayer.brain.drawGenome(startX, startY, w, h);

@@ -62,7 +62,7 @@ class Genome {
 
 
 
-  //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------
   //returns the node with a matching number
   //sometimes the this.nodes will not be in order
   getNode(nodeNumber) {
@@ -75,7 +75,7 @@ class Genome {
   }
 
 
-  //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  //------------------------------------------------
   //adds the conenctions going out of a node to that node so that it can acess the next node during feeding forward
   connectNodes() {
 
@@ -88,7 +88,7 @@ class Genome {
     }
   }
 
-  //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------------
   //feeding in input values varo the NN and returning output array
   feedForward(inputValues) {
     //set the outputs of the input this.nodes
@@ -114,7 +114,7 @@ class Genome {
     return outs;
   }
 
-  //----------------------------------------------------------------------------------------------------------------------------------------
+  //-------------------------------------------
   //sets up the NN as a list of this.nodes in order to be engaged
 
   generateNetwork() {
@@ -130,7 +130,7 @@ class Genome {
         }
       }
     }
-    //-----------------------------------------------------------------------------------------------------------------------------------------
+    //---------------------------------------
     //mutate the NN by adding a new node
     //it does this by picking a random connection and disabling it then 2 new connections are added
     //1 between the input node of the disabled connection and the new node
@@ -180,7 +180,7 @@ class Genome {
     this.connectNodes();
   }
 
-  //------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------
   //adds a connection between 2 this.nodes which aren't currently connected
   addConnection(innovationHistory) {
       //cannot add a connection to a fully connected network
@@ -213,7 +213,7 @@ class Genome {
       this.genes.push(new connectionGene(this.nodes[randomNode1], this.nodes[randomNode2], random(-1, 1), connectionInnovationNumber)); //changed this so if error here
       this.connectNodes();
     }
-    //-------------------------------------------------------------------------------------------------------------------------------------------
+    //-----------------------------------------
   randomConnectionNodesAreShit(r1, r2) {
     if (this.nodes[r1].layer == this.nodes[r2].layer) return true; // if the this.nodes are in the same layer
     if (this.nodes[r1].isConnectedTo(this.nodes[r2])) return true; //if the this.nodes are already connected
@@ -223,7 +223,7 @@ class Genome {
     return false;
   }
 
-  //-------------------------------------------------------------------------------------------------------------------------------------------
+  //--------------------------------------------
   //returns the innovation number for the new mutation
   //if this mutation has never been seen before then it will be given a new unique innovation number
   //if this mutation matches a previous mutation then it will be given the same innovation number as the previous one
@@ -250,7 +250,7 @@ class Genome {
       }
       return connectionInnovationNumber;
     }
-    //----------------------------------------------------------------------------------------------------------------------------------------
+    //--------------------------------------------
 
   //returns whether the network is fully connected or not
   fullyConnected() {
@@ -282,7 +282,7 @@ class Genome {
   }
 
 
-  //-------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------
   //mutates the genome
   mutate(innovationHistory) {
     if (this.genes.length == 0) {
@@ -300,7 +300,8 @@ class Genome {
 
     //5% of the time add a new connection
     var rand2 = random(1);
-    if (rand2 < 0.05) {
+    //if (rand2 < 0.05) {
+      if (rand2 < 0.07) {
 
       this.addConnection(innovationHistory);
     }
@@ -308,13 +309,13 @@ class Genome {
     //1% of the time add a node
     var rand3 = random(1);
     // if (rand3 < 0.01) {
-    if (rand3 < 0.01) {
+    if (rand3 < 0.015) {
 
       this.addNode(innovationHistory);
     }
   }
 
-  //---------------------------------------------------------------------------------------------------------------------------------
+  //--------------------------------------
   //called when this Genome is better that the other parent
   crossover(parent2) {
     var child = new Genome(this.inputs, this.outputs, true);
@@ -371,7 +372,7 @@ class Genome {
     return child;
   }
 
-  //----------------------------------------------------------------------------------------------------------------------------------------
+  //-----------------------------------------
   //returns whether or not there is a gene matching the input innovation number  in the input genome
   matchingGene(parent2, innovationNumber) {
       for (var i = 0; i < parent2.genes.length; i++) {
@@ -381,7 +382,7 @@ class Genome {
       }
       return -1; //no matching gene found
     }
-    //----------------------------------------------------------------------------------------------------------------------------------------
+    //-----------------------------------------
     //prints out info about the genome to the console
   printGenome() {
     console.log("Prvar genome  layers:" + this.layers);
@@ -399,7 +400,7 @@ class Genome {
     console.log();
   }
 
-  //----------------------------------------------------------------------------------------------------------------------------------------
+  //------------------------------------------
   //returns a copy of this genome
   clone() {
 
@@ -423,154 +424,228 @@ class Genome {
       return clone;
     }
 
-//----------------------------------------------------------------------------------------------------------------------------------------
-    //draw the genome on the screen
-    drawGenomeDetail(startX, startY, w, h, player) {
-      
-      var allNodes = []; 
-      var nodePoses = []; 
-      var nodeNumbers = []; 
+
+
+//--------------------------------------------
   
-      //get the positions on the screen that each node is supposed to be in
-  
-  
-      //split the this.nodes varo layers
-      for (var i = 0; i < this.layers; i++) {
-        var temp = []; 
-        for (var j = 0; j < this.nodes.length; j++) { //for each node
-          if (this.nodes[j].layer == i) { //check if it is in this layer
-            temp.push(this.nodes[j]); //add it to this layer
+
+      //draw the genome on the screen
+      drawGenomeDetail(startX, startY, w, h, player) {
+        
+        var allNodes = []; 
+        var nodePoses = []; 
+        var nodeNumbers = []; 
+        var nodeOutput = [];
+    
+        //get the positions on the screen that each node is supposed to be in
+    
+    
+        //split the this.nodes varo layers
+        for (var i = 0; i < this.layers; i++) {
+          var temp = []; 
+          for (var j = 0; j < this.nodes.length; j++) { //for each node
+            if (this.nodes[j].layer == i) { //check if it is in this layer
+              temp.push(this.nodes[j]); //add it to this layer
+            }
+          }
+          allNodes.push(temp); //add this layer to all this.nodes
+        }
+    
+        //for each layer add the position of the node on the screen to the node posses arraylist
+        for (var i = 0; i < this.layers; i++) {
+          fill(255, 0, 0);
+          // var x = startX + float((i + 1.0) * w) / float(this.layers + 1.0);
+          var x = startY + float((i + 1.0) * w) / float(this.layers + 1.0); // REVERSO
+          for (var j = 0; j < allNodes[i].length; j++) { //for the position in the layer
+            //var y = startY + float((j + 1.0) * h) / float(allNodes[i].length + 1.0);
+            var y = startX + float((j + 1.0) * h) / float(allNodes[i].length + 1.0); // REVERSO
+            nodePoses.push(createVector(x, y));
+            nodeNumbers.push(allNodes[i][j].number);
+            nodeOutput.push(allNodes[i][j].outputValue.toFixed(3)); // should be in the same order!
           }
         }
-        allNodes.push(temp); //add this layer to all this.nodes
-      }
-  
-      //for each layer add the position of the node on the screen to the node posses arraylist
-      for (var i = 0; i < this.layers; i++) {
-        fill(255, 0, 0);
-        var x = startX + float((i + 1.0) * w) / float(this.layers + 1.0);
-        for (var j = 0; j < allNodes[i].length; j++) { //for the position in the layer
-          var y = startY + float((j + 1.0) * h) / float(allNodes[i].length + 1.0);
-          nodePoses.push(createVector(x, y));
-          nodeNumbers.push(allNodes[i][j].number);
-        }
-      }
-  
-      //draw connections
-      stroke(0);
-      strokeWeight(2);
-      for (var i = 0; i < this.genes.length; i++) {
-        if (this.genes[i].enabled) {
-          stroke(0);
-        } else {
-          stroke(100);
-        }
-        var from;
-        var to;
-        from = nodePoses[nodeNumbers.indexOf(this.genes[i].fromNode.number)];
-        to = nodePoses[nodeNumbers.indexOf(this.genes[i].toNode.number)];
-        if (this.genes[i].weight > 0) {
-          stroke(255, 0, 0);
-        } else {
-          stroke(0, 0, 255);
-        }
-        strokeWeight(map(abs(this.genes[i].weight), 0, 1, 0, 3));
-        line(from.x, from.y, to.x, to.y);
-      }
-  
-      //draw this.nodes last so they appear ontop of the connection lines
-      textSize(10);
-      textAlign(CENTER, CENTER);
-      stroke(0);
-      textFont('Arial');
-      for (var i = 0; i < nodePoses.length; i++) {
-        fill(255);
-        strokeWeight(1);
-        ellipse(nodePoses[i].x, nodePoses[i].y, 20, 20);
-        fill(0);
-        text(nodeNumbers[i], nodePoses[i].x, nodePoses[i].y);
-  
-      }
-  
-// add player detail HACK
+    
+        //draw connections
+        stroke(0);
+        strokeWeight(2);
+        for (var i = 0; i < this.genes.length; i++) {
+          if (this.genes[i].enabled) {
+            stroke(0);
+          } else {
+            stroke(100);
+          }
+          var from;
+          var to;
+          var connectionColor;
+          var weightTextColor;
+          from = nodePoses[nodeNumbers.indexOf(this.genes[i].fromNode.number)];
+          to = nodePoses[nodeNumbers.indexOf(this.genes[i].toNode.number)];
+          if (this.genes[i].weight > 0) {
+            connectionColor = color(150,50,50, 64);
+            weightTextColor = color(255,200,200);
+          } else {
+            connectionColor = color(50,50,150, 64);
+            weightTextColor = color(200,200,255);
+          }
 
-    try{
-      var tPosX = nodePoses[0].x - 20; 
-      var tPosY = startY;
-      var ySPacer = 28;
-      var yTop = 628;
-      textAlign(RIGHT);
-      noStroke();
-      textSize(16);
-      textStyle(BOLD);
-      fill(230,230,100);
-      text(player.vision0.toFixed(2) + " | xPos", tPosX, yTop);
-      text(player.vision1.toFixed(2) + " | yPos", tPosX, yTop + ySPacer);
-      //textSize(16);
-      text(player.vision2.toFixed(2) + " | Cave", tPosX, yTop + 2*ySPacer);
-      //textSize(12);
-      text(player.vision3.toFixed(2) + " | Camp", tPosX, yTop + 3*ySPacer);
-      text(player.vision4.toFixed(2) + " | Sold0", tPosX, yTop + 4*ySPacer);
-      //textSize(16);
-      text(player.vision5.toFixed(2) + " | Sold1", tPosX, yTop + 5*ySPacer);
-      //textSize(12);
-      text(player.vision6.toFixed(2) + " | Sold2", tPosX, yTop + 6*ySPacer);
+          stroke(connectionColor);
+          strokeWeight(map(abs(this.genes[i].weight), 0, 1, 1, 25)); // why not just multiply by 3?
 
+          // line(from.x, from.y, to.x, to.y);  
+          line(from.y, from.x, to.y, to.x);  // REVERSO
+          textSize(10);
+          strokeWeight(0);
+          textAlign(LEFT);
+          fill(weightTextColor);
+          text(this.genes[i].weight.toFixed(3), from.y + (to.y-from.y)/2, from.x + (to.x-from.x)/2);
+        }
+    
+        //draw this.nodes last so they appear ontop of the connection lines
+        textSize(10);
+        textAlign(CENTER, CENTER);
+        stroke(0);
+        textFont('Arial');
+        for (var i = 0; i < nodePoses.length; i++) {
+          fill(40, 150, 200);
+          strokeWeight(1);
+          stroke(0,40,40);
+          // ellipse(nodePoses[i].x, nodePoses[i].y, 20, 20); 
+          ellipse(nodePoses[i].y, nodePoses[i].x, 35, 35); // REVERSO
+          stroke(255,255,0);
+          strokeWeight(0);
+          fill(255,255,0);
+          //text(nodeNumbers[i], nodePoses[i].x, nodePoses[i].y);  
+          //text(nodeNumbers[i], nodePoses[i].y, nodePoses[i].x); // REVERSO
+          text(nodeOutput[i], nodePoses[i].y, nodePoses[i].x);
+          
+
+        }
+    
+  // add player detail HACK
+
+  try{
+    var tPosX = 1218; 
+    var tPosY =  nodePoses[0].x - 45; // relate to first node
+    var tPosY2 = nodePoses[0].x - 30;
+    var xSpacer = 47;
+  
+    textAlign(CENTER);
+    noStroke();
+    textSize(14);
+    textStyle(BOLD);
+    fill(255);
+
+
+
+    
+    textSize(10);
+    text("XPOS", tPosX , tPosY);
+    text("YPOS", tPosX + 1 * xSpacer, tPosY);
+    text("S0-X", tPosX + 2 * xSpacer, tPosY);
+    text("S0-Y", tPosX + 3 * xSpacer, tPosY);
+    text("S1-X", tPosX + 4 * xSpacer, tPosY);
+    text("S1-Y", tPosX + 5 * xSpacer, tPosY);
+    text("S2-X", tPosX + 6 * xSpacer, tPosY);
+    text("S2-Y", tPosX + 7 * xSpacer, tPosY);
+    text("BIAS", tPosX + 8 * xSpacer, tPosY);
+
+    textSize(12);
+    text(player.vision0.toFixed(1), tPosX, tPosY2);
+    text(player.vision1.toFixed(1), tPosX + 1 * xSpacer, tPosY2);
+    text(player.vision2.toFixed(1), tPosX + 2 * xSpacer, tPosY2);
+    text(player.vision3.toFixed(1), tPosX + 3 * xSpacer, tPosY2);
+    text(player.vision4.toFixed(1), tPosX + 4 * xSpacer, tPosY2);
+    text(player.vision5.toFixed(1), tPosX + 5 * xSpacer, tPosY2);
+    text(player.vision6.toFixed(1), tPosX + 6 * xSpacer, tPosY2);
+
+  }
+  catch(err)
+  {}
+
+    textFont('Arial');
+    textSize(14);
+    var res0 = player.response0.toFixed(3);
+    var res1 = player.response1.toFixed(3);
+    var res2 = player.response2.toFixed(3);
+    var res3 = player.response3.toFixed(3);
+
+    var xPos2 = 1265;
+    var yPos2 = nodePoses[nodePoses.length-1].x + 45; // relate to response nodes
+    //bestDuckLogYPos = yPos2 + 60; //global
+  
+    var xSpacer = 95;
+
+    var baseColor = color(255);
+    var hotColor = color(255,0,0);
+
+    fill(baseColor);
+    
+    if (res0 > .6) {
+      fill(hotColor);
     }
-    catch(err)
-    {}
+    textSize(10);
+    text("UP", xPos2, yPos2 -15);
+    textSize(14);
+    text(player.response0.toFixed(3), xPos2, yPos2);
+    
 
-
-
-      textFont('Arial');
-      textSize(16);
-      var res0 = player.response0.toFixed(2);
-      var res1 = player.response1.toFixed(2);
-      var res2 = player.response2.toFixed(2);
-      var res3 = player.response3.toFixed(2);
-
-      var yTop2 = 632;
-      var ySpacer2 = 50;
-
-      fill(230,230,100);
-
-      if (res0 > .6) {
-        fill(255,0,0);
-      }
-      text(res0 + " |Up", canvas.width - 130, yTop2);
-      fill(230,230,100);
-
-      if (res1 > .6) {
-        fill(255,0,0);
-      }
-      text(res1 + " |Dn", canvas.width - 130, yTop2 + ySpacer2); 
-      fill(230,230,100);
-
-      if (res2 > .6) {
-        fill(255,0,0);
-      }
-      text(res2 + " |Lt", canvas.width - 130, yTop2 + 2*ySpacer2);
-      fill(230,230,100);
-
-      if (res3 > .6) {
-        fill(255,0,0);
-      }
-      text(res3 + " |Rt", canvas.width - 130, yTop2 + 3*ySpacer2);
-      fill(230,230,100);
-
-      textStyle(NORMAL);
-
-
-
-
+    fill(baseColor);
+    if (res1 > .6) {
+      fill(hotColor);
     }
+    textSize(10);
+    text("DOWN", xPos2 + xSpacer, yPos2 -15);
+    textSize(14);
+    text(player.response1.toFixed(3), xPos2 + xSpacer, yPos2); 
+    
+
+    fill(baseColor);
+    if (res2 > .6) {
+      fill(hotColor);
+    }
+    textSize(10);
+    text("LEFT", xPos2 + 2*xSpacer, yPos2 -15);
+    textSize(14);
+    text(player.response2.toFixed(3), xPos2 + 2*xSpacer, yPos2);
+    
+
+    fill(baseColor);
+    if (res3 > .6) {
+      fill(hotColor);
+    }
+    textSize(10);
+    text("RIGHT", xPos2 + 3*xSpacer, yPos2 -15);
+    textSize(14);
+    text(player.response3.toFixed(3), xPos2 + 3*xSpacer, yPos2);
+    fill(230,230,100);
+
+    textStyle(NORMAL);
+  }
 
 
 
 
 
 
-    //----------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //--------------------------------------------
     //draw the genome on the screen
   drawGenome(startX, startY, w, h) {
     //i know its ugly but it works (and is not that important) so I'm not going to mess with it

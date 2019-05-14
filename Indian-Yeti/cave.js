@@ -1,8 +1,8 @@
 class Cave {
     constructor(){
         this.size = 50;
-        this.x = this.size + random(245); 
-        this.y = this.size + random(800); 
+        this.x = 100; //this.size + random(245); 
+        this.y = 800; //this.size + random(800); 
 
         
         this.food = 100;
@@ -23,7 +23,7 @@ class Cave {
                 p.inCave = true;
 
                 this.food += p.food;
-                p.score += 10 + p.food;
+                p.score += 1 + p.food * 100;
                 p.bodyTemp += 1;
 
                 p.food = 0;
