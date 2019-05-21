@@ -26,6 +26,53 @@ class Soldier{
         this.alertVel = .25;
         this.enemy = enemy;
 
+        this.face = this.face(); 
+        //this.textSize =  15 + random(20);
+
+    }
+
+    face(){
+
+        var unique;
+        var pass = false;
+
+        while(!pass){
+            var unique = 41 + random(85) | 0; // bitwise OR conversion to integer trick
+            switch(unique){
+                case 43:
+                break;
+                case 45:
+                break;
+                case 64:
+                break;
+                case 87:
+                break;
+                case 90:
+                break;
+                case 93:
+                break;
+                case 94:
+                break;
+                case 96:
+                break;
+                case 113:
+                break;
+                case 115:
+                break;
+                case 122:
+                break;
+
+
+                default:
+                pass = true;
+            }
+
+        }
+        
+        var uniqueFace = String.fromCharCode(unique);
+
+        return uniqueFace;
+
     }
 
     coinfFlip(){
@@ -38,21 +85,33 @@ class Soldier{
 
     show() {
 
+        //textSize(this.textSize);
+        textSize(25);
+        textFont('devlys_020_italic');
+        textAlign(CENTER, TOP);
+        strokeWeight(0);
         if (this.visible){
-            image(soldierSeeSprite, this.x - this.halfsize, this.y - this.halfsize);
+            fill(0,0,255);
+
+            text(this.face, this.x - this.halfsize, this.y - this.halfsize);
+            //image(soldierSeeSprite, this.x - this.halfsize, this.y - this.halfsize);
         }
         else if (this.heatVisible) {
-            image(soldierHeatSprite, this.x - this.halfsize, this.y - this.halfsize);
+            fill(255,0,0);
+            text(this.face, this.x - this.halfsize, this.y - this.halfsize);
+            //image(soldierHeatSprite, this.x - this.halfsize, this.y - this.halfsize);
         } else {
-            image(soldierGhostSprite, this.x - this.halfsize, this.y - this.halfsize);
+            fill(220);
+            text(this.face, this.x - this.halfsize, this.y - this.halfsize);
+            //image(soldierGhostSprite, this.x - this.halfsize, this.y - this.halfsize);
         }
-
+/* 
         if (this.enemy.isBest){
             stroke(255,0,0);
             strokeWeight(1);
             fill(0,0,0,0);
             arc(this.x, this.y, this.vision*2, this.vision*2, 0, TWO_PI);
-        }
+        } */
 
 
     }

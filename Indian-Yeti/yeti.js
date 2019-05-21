@@ -19,7 +19,7 @@ class Yeti {
         this.seeSquaredHeat = sq(this.heatVision + 25); 
         this.bodyTemp = 200;
 
-        this.size = 35; // width ? 
+        this.size = 35; // width  and height
         this.halfsize = this.size/2;
         this.dead = false;
         this.food = 2; // food in hand
@@ -75,6 +75,10 @@ class Yeti {
 
         this.brain = new Genome(this.genomeInputs, this.genomeOutputs);
 
+        //this.face = 38 + random(7) | 0; // bitwise OR conversion to integer trick
+        //this.textSize =  25 + random(10);
+
+
     }
 
 
@@ -83,23 +87,343 @@ class Yeti {
 
         this.army.show();
         this.cave.show();
-        //this.camp.show();
+        
 
-        if (this.isTop || humanPlaying) {
-            image(bestYetiSprite, this.x - this.halfsize , this.y - this.halfsize);
 
+        textFont('indianyetiregular');
+        textAlign(CENTER, TOP);
+        strokeWeight(0);
+        textSize(35);
+
+        if (this.isBest) {
+
+          fill(255,0,0);
+          text("1", this.x - this.halfsize, this.y - this.halfsize);
+
+                //this.vertexYeti(this.x, this.y, 75);
+                //image(bestYetiSprite, this.x - this.halfsize , this.y - this.halfsize, 65, 65);
+           /*      strokeWeight(1);
             stroke(0,0,240);
             fill(0,0,0,0);
             arc(this.x, this.y, this.visionDist*2, this.visionDist*2, 0, TWO_PI);
             stroke(100,0,140);
             fill(0,0,0,0);
-            arc(this.x, this.y, this.heatVision*2, this.heatVision*2, 0, TWO_PI);
+            arc(this.x, this.y, this.heatVision*2, this.heatVision*2, 0, TWO_PI); */
 
           } else {
-            image(yetiSprite, this.x - this.halfsize , this.y - this.halfsize);
+
+            fill(180);
+            text("1", this.x - this.halfsize, this.y - this.halfsize);
+
+                //this.vertexYeti(this.x, this.y, 0);
+                //image(yetiSprite, this.x - this.halfsize , this.y - this.halfsize, 55, 55);
           }
     }
 
+
+    vertexYeti(x,y, color){
+
+      push();
+      translate(x,y);
+       
+       scale(.15);
+
+
+       beginShape();
+        fill(color);
+        vertex(228,430);
+        vertex(226,430); 
+        vertex(226,444); 
+        vertex(227,463); 
+        vertex(225,476); 
+        vertex(220,479); 
+        vertex(175,485); 
+        vertex(113,493); 
+        vertex(82,497); 
+        vertex(56,494); 
+        vertex(57,489); 
+        vertex(64,489); 
+        vertex(68,486); 
+        vertex(78,485); 
+        vertex(105,480); 
+        vertex(125,474); 
+        vertex(144,470); 
+        vertex(162,465); 
+        vertex(168,463); 
+        vertex(174,464); 
+        vertex(178,464); 
+        vertex(178,460); 
+        vertex(209,455); 
+        vertex(211,453); 
+        vertex(213,451); 
+        vertex(211,436); 
+        vertex(207,439); 
+        vertex(201,443); 
+        vertex(195,441); 
+        vertex(192,435);
+        vertex(186,411); 
+        vertex(184,401); 
+        vertex(185,401);
+        vertex(194,406); 
+        vertex(203,406); 
+        vertex(213,405); 
+        vertex(248,401); 
+        vertex(282,398); 
+        vertex(285,397); 
+        vertex(290,395); 
+        vertex(294,399); 
+        vertex(295,396); 
+        vertex(306,395); 
+        vertex(331,382); 
+        vertex(348,375); 
+        vertex(369,368); 
+        vertex(367,373); 
+        vertex(362,377); 
+        vertex(332,396); 
+        vertex(332,397); 
+        vertex(356,395); 
+        vertex(358,395); 
+        vertex(378,398); 
+        vertex(398,398); 
+        vertex(390,403); 
+        vertex(381,405); 
+        vertex(359,406); 
+        vertex(353,408); 
+        vertex(348,413); 
+        vertex(342,416); 
+        vertex(340,416); 
+        vertex(334,418); 
+        vertex(329,414); 
+        vertex(324,411); 
+        vertex(286,414); 
+        vertex(249,422); 
+        vertex(236,427); 
+        vertex(246,441); 
+        vertex(251,442); 
+        vertex(276,439); 
+        vertex(300,438); 
+        vertex(329,440); 
+        vertex(357,442); 
+        vertex(387,444); 
+        vertex(366,450); 
+        vertex(343,453); 
+        vertex(344,456); 
+        vertex(334,456); 
+        vertex(319,459); 
+        vertex(277,468); 
+        vertex(250,469); 
+        vertex(241,464); 
+        vertex(233,450); 
+        vertex(228,430);
+       endShape(CLOSE);
+
+
+
+      beginShape();
+        vertex(172,429); 
+        vertex(166,435); 
+        vertex(179,439); 
+        vertex(164,454); 
+        vertex(160,455); 
+        vertex(155,454); 
+        vertex(144,446); 
+        vertex(140,442); 
+        vertex(142,438); 
+        vertex(135,430); 
+        vertex(151,426); 
+        vertex(151,425); 
+        vertex(142,419); 
+        vertex(154,415); 
+        vertex(166,413); 
+        vertex(178,418); 
+        vertex(166,426); 
+        vertex(172,429);
+      endShape(CLOSE);
+
+
+
+      beginShape();
+        vertex(172,285); 
+        vertex(147,222); 
+        vertex(137,201); 
+        vertex(125,174); 
+        vertex(125,172); 
+        vertex(121,168); 
+        vertex(124,163);
+        vertex(135,149);
+        vertex(139,147);
+        vertex(143,152);
+        vertex(163,206);
+        vertex(181,249);
+        vertex(187,260);
+        vertex(175,258);
+        vertex(179,277);
+        vertex(183,292);
+        vertex(188,306);
+        vertex(189,306);
+        vertex(190,268);
+        vertex(193,189);
+        vertex(194,170);
+        vertex(198,118);
+        vertex(199,61);
+        vertex(200,50);
+        vertex(202,66);
+        vertex(203,86);
+        vertex(202,118);
+        vertex(203,150);
+        vertex(202,175);
+        vertex(202,191);
+        vertex(201,201);
+        vertex(203,285);
+        vertex(204,311);
+        vertex(204,334);
+        vertex(214,332);
+        vertex(214,326);
+        vertex(211,282);
+        vertex(209,246);
+        vertex(205,214);
+        vertex(206,181);
+        vertex(208,144);
+        vertex(211,122);
+        vertex(214,106);
+        vertex(219,82);
+        vertex(225,40);
+        vertex(224,33);
+        vertex(220,26);
+        vertex(221,25);
+        vertex(225,29);
+        vertex(228,38);
+        vertex(229,47);
+        vertex(221,127);
+        vertex(220,143);
+        vertex(218,145);
+        vertex(220,147);
+        vertex(220,150);
+        vertex(218,154);
+        vertex(219,160);
+        vertex(219,165);
+        vertex(218,168);
+        vertex(221,170);
+        vertex(222,173);
+        vertex(219,174);
+        vertex(221,179);
+        vertex(220,179);
+        vertex(220,184);
+        vertex(221,187);
+        vertex(222,201);
+        vertex(221,205);
+        vertex(222,220);
+        vertex(224,243);
+        vertex(227,266);
+        vertex(232,315);
+        vertex(232,328);
+        vertex(234,332);
+        vertex(238,333);
+        vertex(257,333);
+        vertex(283,332);
+        vertex(299,331);
+        vertex(296,333);
+        vertex(355,331);
+        vertex(350,336);
+        vertex(344,338);
+        vertex(309,342);
+        vertex(265,346);
+        vertex(238,347);
+        vertex(233,347);
+        vertex(233,356);
+        vertex(260,355);
+        vertex(262,353);
+        vertex(265,352);
+        vertex(273,354);
+        vertex(282,353);
+        vertex(312,351);
+        vertex(338,349);
+        vertex(339,349);
+        vertex(353,350);
+        vertex(367,351);
+        vertex(351,354);
+        vertex(335,356);
+        vertex(338,357);
+        vertex(361,356);
+        vertex(366,358);
+        vertex(358,361);
+        vertex(349,361);
+        vertex(344,361);
+        vertex(327,362);
+        vertex(314,366);
+        vertex(300,367);
+        vertex(287,368);
+        vertex(275,373);
+        vertex(265,375);
+        vertex(246,379);
+        vertex(224,386);
+        vertex(221,390);
+        vertex(218,391);
+        vertex(221,388);
+        vertex(219,387);
+        vertex(191,395);
+        vertex(169,400);
+        vertex(163,403);
+        vertex(158,405);
+        vertex(154,401);
+        vertex(153,387);
+        vertex(157,373);
+        vertex(163,369);
+        vertex(186,365);
+        vertex(189,361);
+        vertex(189,354);
+        vertex(168,356);
+        vertex(134,363);
+        vertex(127,365);
+        vertex(120,367);
+        vertex(115,361);
+        vertex(114,350);
+        vertex(117,339);
+        vertex(124,334);
+        vertex(128,333);
+        vertex(132,333);
+        vertex(149,333);
+        vertex(184,332);
+        vertex(189,331);
+        vertex(189,314);
+        vertex(171,312);
+        vertex(161,301);
+        vertex(148,293);
+        vertex(143,293);
+        vertex(128,295);
+        vertex(124,292);
+        vertex(124,281);
+        vertex(130,272);
+        vertex(139,268);
+        vertex(150,272);
+        vertex(168,285);
+        vertex(171,286);
+        vertex(172,285);
+
+
+        beginContour();
+          vertex(215,361); 
+          vertex(215,353); 
+          vertex(215,350); 
+          vertex(212,349); 
+          vertex(206,351); 
+          vertex(204,357); 
+          vertex(207,362); 
+          vertex(215,361);
+        endContour();
+
+      endShape(CLOSE);
+
+
+
+
+
+    
+
+
+       pop();
+
+    }
 
 
 
