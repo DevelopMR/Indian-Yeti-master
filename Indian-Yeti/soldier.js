@@ -8,16 +8,18 @@ class Soldier{
         this.vision = 125;
         this.seesquared = sq(this.vision + enemy.halfsize);
 
-        this.x = c.x - 5 - random(20);
-        this.y = c.y - 20 + random(40);
+        this.headwind = .01;
+
+        this.x = c.x + 5 - random(20);
+        this.y = c.y + 20 + random(40);
 
         if (this.y - this.halfsize < 0){this.y = this.halfsize};
         if (this.y + this.halfsize > 900){this.y = 900 - this.halfsize};
 
         
 
-        this.velX = (1 + random(2))*this.coinfFlip();
-        this.velY = (1 + random(2))*this.coinfFlip();
+        this.velX = (1 + random(4))*this.coinfFlip();
+        this.velY = (1 + random(4))*this.coinfFlip();
 
 
         this.visible = false; // start false
@@ -85,33 +87,38 @@ class Soldier{
 
     show() {
 
+
+        var xDel = this.enemy.x - this.x;
+        var yDel = this.enemy.y - this.y;
+
+        //var dist = sqrt(sq(xDel) + sq(yDel));
+        var dist = constrain( sqrt(sq(xDel) + sq(yDel)) , 0, 360);
+
+        var dist2 = map(dist,0,360,0,180) |0;
+
+        var hsl = "hsl(" + dist2 + " , 100%, 50%)";
+        var col = color(hsl);
+
         //textSize(this.textSize);
-        textSize(25);
+        textSize(35);
         textFont('devlys_020_italic');
         textAlign(CENTER, TOP);
         strokeWeight(0);
-        if (this.visible){
-            fill(0,0,255);
+        if (this.heatVisible || this.visible){
 
+            colorMode(HSB);
+            fill(col);
             text(this.face, this.x - this.halfsize, this.y - this.halfsize);
-            //image(soldierSeeSprite, this.x - this.halfsize, this.y - this.halfsize);
+            
         }
-        else if (this.heatVisible) {
-            fill(255,0,0);
-            text(this.face, this.x - this.halfsize, this.y - this.halfsize);
-            //image(soldierHeatSprite, this.x - this.halfsize, this.y - this.halfsize);
-        } else {
+         else {
+            colorMode(RGB);
             fill(220);
             text(this.face, this.x - this.halfsize, this.y - this.halfsize);
-            //image(soldierGhostSprite, this.x - this.halfsize, this.y - this.halfsize);
+
+ 
         }
-/* 
-        if (this.enemy.isBest){
-            stroke(255,0,0);
-            strokeWeight(1);
-            fill(0,0,0,0);
-            arc(this.x, this.y, this.vision*2, this.vision*2, 0, TWO_PI);
-        } */
+        colorMode(RGB);
 
 
     }
@@ -138,10 +145,18 @@ class Soldier{
             if (yDel > 0 ){
                 this.velY += this.alertVel;
             }
-            constrain(this.velY, -20, 20);
-            constrain(this.velY, -20, 20);
+            
         }
         
+
+        this.velY += this.headwind * 15 * Math.sin(dayCounter/60) * Math.cos((this.x+dayCounter)/60);
+
+        //this.velY += this.headwind* Math.sin(dayCounter);
+        this.velX += this.headwind + .035 * Math.cos((this.x+dayCounter)/60);;
+
+        this.velX = constrain(this.velX, -6, 6); // -5 5
+        this.velY = constrain(this.velY, -6, 6); //
+
         this.x += this.velX;
         this.y += this.velY;
 
@@ -189,10 +204,10 @@ class Soldier{
     // borders, other soldiers, trail, cave, camp
     collision(){
         // 6 point boundary
-        if (this.x - this.halfsize < 6 || this.x + this.halfsize > 1174) {
+        if (this.x - this.halfsize < 6 || this.x + this.halfsize > 1179) {
             this.velX = -this.velX;
         }
-        if (this.y - this.halfsize < 6 || this.y + this.halfsize > 894) {
+        if (this.y - this.halfsize < 0 || this.y + this.halfsize > 895) {
             this.velY = -this.velY;
         }
 

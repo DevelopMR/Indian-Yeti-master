@@ -301,7 +301,7 @@ class Genome {
     //5% of the time add a new connection
     var rand2 = random(1);
     //if (rand2 < 0.05) {
-      if (rand2 < 0.07) {
+      if (rand2 < 0.25) {
 
       this.addConnection(innovationHistory);
     }
@@ -309,7 +309,7 @@ class Genome {
     //1% of the time add a node
     var rand3 = random(1);
     // if (rand3 < 0.01) {
-    if (rand3 < 0.015) {
+    if (rand3 < 0.04) {
 
       this.addNode(innovationHistory);
     }
@@ -455,10 +455,12 @@ class Genome {
         for (var i = 0; i < this.layers; i++) {
           fill(255, 0, 0);
           // var x = startX + float((i + 1.0) * w) / float(this.layers + 1.0);
-          var x = startY + float((i + 1.0) * w) / float(this.layers + 1.0); // REVERSO
+          //var x = startY + float((i + 1.0) * w) / float(this.layers + 1.0); // REVERSO
+          var x = startY + float((i ) * w) / float(this.layers + 1.0); // REVERSO
           for (var j = 0; j < allNodes[i].length; j++) { //for the position in the layer
             //var y = startY + float((j + 1.0) * h) / float(allNodes[i].length + 1.0);
             var y = startX + float((j + 1.0) * h) / float(allNodes[i].length + 1.0); // REVERSO
+            
             nodePoses.push(createVector(x, y));
             nodeNumbers.push(allNodes[i][j].number);
             nodeOutput.push(allNodes[i][j].outputValue.toFixed(3)); // should be in the same order!
@@ -468,6 +470,7 @@ class Genome {
         //draw connections
         stroke(0);
         strokeWeight(2);
+        textFont('Arial');
         for (var i = 0; i < this.genes.length; i++) {
           if (this.genes[i].enabled) {
             stroke(0);
@@ -481,15 +484,15 @@ class Genome {
           from = nodePoses[nodeNumbers.indexOf(this.genes[i].fromNode.number)];
           to = nodePoses[nodeNumbers.indexOf(this.genes[i].toNode.number)];
           if (this.genes[i].weight > 0) {
-            connectionColor = color(150,50,50, 64);
+            connectionColor = color(150,50,50, 85);
             weightTextColor = color(255,200,200);
           } else {
-            connectionColor = color(50,50,150, 64);
+            connectionColor = color(50,50,150, 85);
             weightTextColor = color(200,200,255);
           }
-
+          
           stroke(connectionColor);
-          strokeWeight(map(abs(this.genes[i].weight), 0, 1, 1, 25)); // why not just multiply by 3?
+          strokeWeight(map(abs(this.genes[i].weight), 0, 1, 1, 8)); // why not just multiply by 3?
 
           // line(from.x, from.y, to.x, to.y);  
           line(from.y, from.x, to.y, to.x);  // REVERSO
@@ -497,26 +500,26 @@ class Genome {
           strokeWeight(0);
           textAlign(LEFT);
           fill(weightTextColor);
-          text(this.genes[i].weight.toFixed(3), from.y + (to.y-from.y)/2, from.x + (to.x-from.x)/2);
+          // text(this.genes[i].weight.toFixed(3), from.y + (to.y-from.y)/2, from.x + (to.x-from.x)/2);
         }
     
         //draw this.nodes last so they appear ontop of the connection lines
         textSize(10);
         textAlign(CENTER, CENTER);
         stroke(0);
-        textFont('Arial');
+        //textFont('Arial');
         for (var i = 0; i < nodePoses.length; i++) {
           fill(40, 150, 200);
           strokeWeight(1);
           stroke(0,40,40);
           // ellipse(nodePoses[i].x, nodePoses[i].y, 20, 20); 
-          ellipse(nodePoses[i].y, nodePoses[i].x, 35, 35); // REVERSO
+          ellipse(nodePoses[i].y, nodePoses[i].x, 8, 8); // REVERSO
           stroke(255,255,0);
           strokeWeight(0);
           fill(255,255,0);
           //text(nodeNumbers[i], nodePoses[i].x, nodePoses[i].y);  
           //text(nodeNumbers[i], nodePoses[i].y, nodePoses[i].x); // REVERSO
-          text(nodeOutput[i], nodePoses[i].y, nodePoses[i].x);
+          //text(nodeOutput[i], nodePoses[i].y, nodePoses[i].x);
           
 
         }
@@ -524,10 +527,10 @@ class Genome {
   // add player detail HACK
 
   try{
-    var tPosX = 1218; 
-    var tPosY =  nodePoses[0].x - 45; // relate to first node
-    var tPosY2 = nodePoses[0].x - 30;
-    var xSpacer = 47;
+    var tPosX = 1450; 
+    var tPosY =  nodePoses[0].x - 42; // relate to first node
+    var tPosY2 = nodePoses[0].x - 27;
+    var xSpacer = 18;
   
     textAlign(CENTER);
     noStroke();
@@ -539,41 +542,44 @@ class Genome {
 
     
     textSize(10);
-    text("XPOS", tPosX , tPosY);
-    text("YPOS", tPosX + 1 * xSpacer, tPosY);
-    text("S0-X", tPosX + 2 * xSpacer, tPosY);
-    text("S0-Y", tPosX + 3 * xSpacer, tPosY);
-    text("S1-X", tPosX + 4 * xSpacer, tPosY);
-    text("S1-Y", tPosX + 5 * xSpacer, tPosY);
-    text("S2-X", tPosX + 6 * xSpacer, tPosY);
-    text("S2-Y", tPosX + 7 * xSpacer, tPosY);
-    text("BIAS", tPosX + 8 * xSpacer, tPosY);
+    text("X", tPosX , tPosY);
+    text("Y", tPosX + 1 * xSpacer, tPosY);
+    text("0X", tPosX + 2 * xSpacer, tPosY);
+    text("0Y", tPosX + 3 * xSpacer, tPosY);
+    text("1X", tPosX + 4 * xSpacer, tPosY);
+    text("1Y", tPosX + 5 * xSpacer, tPosY);
+    text("2X", tPosX + 6 * xSpacer, tPosY);
+    text("2Y", tPosX + 7 * xSpacer, tPosY);
+    text("F", tPosX + 8 * xSpacer, tPosY);
+    text("B", tPosX + 9 * xSpacer, tPosY);
 
-    textSize(12);
+    textSize(8);
     text(player.vision0.toFixed(1), tPosX, tPosY2);
-    text(player.vision1.toFixed(1), tPosX + 1 * xSpacer, tPosY2);
-    text(player.vision2.toFixed(1), tPosX + 2 * xSpacer, tPosY2);
-    text(player.vision3.toFixed(1), tPosX + 3 * xSpacer, tPosY2);
-    text(player.vision4.toFixed(1), tPosX + 4 * xSpacer, tPosY2);
-    text(player.vision5.toFixed(1), tPosX + 5 * xSpacer, tPosY2);
-    text(player.vision6.toFixed(1), tPosX + 6 * xSpacer, tPosY2);
+    text(player.vision1.toFixed(1), tPosX + 1 * xSpacer, tPosY2 + 12);
+    text(player.vision2, tPosX + 2 * xSpacer, tPosY2);
+    text(player.vision3, tPosX + 3 * xSpacer, tPosY2 + 12);
+    text(player.vision4, tPosX + 4 * xSpacer, tPosY2);
+    text(player.vision5, tPosX + 5 * xSpacer, tPosY2 + 12);
+    text(player.vision6, tPosX + 6 * xSpacer, tPosY2);
+    text(player.vision7, tPosX + 7 * xSpacer, tPosY2 + 12);
+    text(player.vision8, tPosX + 8 * xSpacer, tPosY2);
 
   }
   catch(err)
   {}
 
     textFont('Arial');
-    textSize(14);
+    
     var res0 = player.response0.toFixed(3);
     var res1 = player.response1.toFixed(3);
     var res2 = player.response2.toFixed(3);
     var res3 = player.response3.toFixed(3);
 
-    var xPos2 = 1265;
-    var yPos2 = nodePoses[nodePoses.length-1].x + 45; // relate to response nodes
+    var xPos2 = 1470;
+    var yPos2 = nodePoses[nodePoses.length-1].x + 35; // relate to response nodes
     //bestDuckLogYPos = yPos2 + 60; //global
   
-    var xSpacer = 95;
+    var xSpacer = 40;
 
     var baseColor = color(255);
     var hotColor = color(255,0,0);
@@ -585,7 +591,7 @@ class Genome {
     }
     textSize(10);
     text("UP", xPos2, yPos2 -15);
-    textSize(14);
+    textSize(8);
     text(player.response0.toFixed(3), xPos2, yPos2);
     
 
@@ -595,7 +601,7 @@ class Genome {
     }
     textSize(10);
     text("DOWN", xPos2 + xSpacer, yPos2 -15);
-    textSize(14);
+    textSize(8);
     text(player.response1.toFixed(3), xPos2 + xSpacer, yPos2); 
     
 
@@ -605,7 +611,7 @@ class Genome {
     }
     textSize(10);
     text("LEFT", xPos2 + 2*xSpacer, yPos2 -15);
-    textSize(14);
+    textSize(8);
     text(player.response2.toFixed(3), xPos2 + 2*xSpacer, yPos2);
     
 
@@ -615,7 +621,7 @@ class Genome {
     }
     textSize(10);
     text("RIGHT", xPos2 + 3*xSpacer, yPos2 -15);
-    textSize(14);
+    textSize(8);
     text(player.response3.toFixed(3), xPos2 + 3*xSpacer, yPos2);
     fill(230,230,100);
 

@@ -9,7 +9,6 @@ var soldierSprite;
 var caveSprite;
 var campSprite;
 
-
 var dieOff = false;
 
 var dayCounter = 360*Math.random();
@@ -48,9 +47,10 @@ function preload() {
     soldierHeatSprite = loadImage("images/soldierHeat.png");
     soldierGhostSprite = loadImage("images/soldierGhost.png");
 
-    caveSprite = loadImage("images/cave.png");
+    caveSprite = loadImage("images/cavePink.png");
     campSprite = loadImage("images/camp.png");
     backgroundSprite = loadImage("images/IndianYetiBG.png");
+    panelBackgroundSprite = loadImage("images/PanelBG3.png");
 
 }
 
@@ -91,9 +91,10 @@ function draw() {
       population.naturalSelection();
     }
   }
-  writeInfo();
+
   drawBrain();
-  
+  writeInfo();
+
 }
 
 
@@ -173,7 +174,7 @@ function drawFilterPass (dCounter){
     push();
 
     beginShape();
-    fill(220,134,79, 128*sin(dCounter/7 % 128));
+    fill(220,134,79, 80*sin(dCounter/7));
     //alpha(dCounter % 255);
 
     for (var i=0; i<=shape1.length/2; i++){
@@ -183,8 +184,30 @@ function drawFilterPass (dCounter){
     endShape(CLOSE);
 
     beginShape();
-    fill(36,52,95, 128*sin(dCounter/8 % 128));
+    fill(36,52,95, 80*sin(dCounter/8));
     //alpha(dCounter % 512);
+    for (var i=0; i<=shape2.length/2; i++){
+      vertex(shape2[i*2], shape2[i*2+1]);
+    }
+    
+    endShape(CLOSE);
+
+
+    beginShape();
+    fill(106, 99, 217, 80*sin(dCounter/11)); // 220,134,79
+    //filter(INVERT);
+
+    for (var i=0; i<=shape1.length/2; i++){
+      vertex(shape1[i*2], shape1[i*2+1]);
+    }
+    
+    endShape(CLOSE);
+
+
+    beginShape();
+    fill(244,209,86, 80*sin(dCounter/5));  // 220,134,79
+    //filter(INVERT);
+
     for (var i=0; i<=shape2.length/2; i++){
       vertex(shape2[i*2], shape2[i*2+1]);
     }
@@ -212,12 +235,13 @@ function drawBrain() { //show the brain of whatever genome is currently showing
 
   strokeWeight(0);
   fill(150,150,150);
-  rect(1180, 0, canvas.width, canvas.height);
+  //rect(1180, 0, canvas.width, canvas.height);
+  image(panelBackgroundSprite, 1166, 0, 470, canvas.height);
 
-  var startX = 1170; 
-  var startY = 10;
+  var startX = 1430; 
+  var startY = 60;
   var w = 450;
-  var h = 475;
+  var h = 200;
 
   if (runBest) {
     population.bestPlayer.brain.drawGenome(startX, startY, w, h);
@@ -273,25 +297,62 @@ function writeInfo() {
   } else {
     var bestCurrentPlayer = population.getCurrentBest();
 
-    textSize(28);
+    textSize(22);
     strokeWeight(1);
-    textFont('Century Gothic');
+    textFont('Papyrus');
 
-    text("CAVE " + bestCurrentPlayer.cave.food, 65, 40);
-    text("SCORE " + bestCurrentPlayer.score.toFixed(0), 520, 40); 
-    text("CAMP " + bestCurrentPlayer.army.camp.food, 930, 40);
+    text(bestCurrentPlayer.cave.food, 1060, 232);
+    // text(bestCurrentPlayer.cave.food, 36, 795);
+    if (bestCurrentPlayer.army.camp.discovered){
+      text(bestCurrentPlayer.army.camp.food, 136, 675);
+      //text(bestCurrentPlayer.army.camp.food, 1100, 67);
+    }
+    
 
-    fill(255,200,0);
-    stroke(255,200,0);
-    textSize(26);
+    textFont('Amatic SC');
+    
+    fill(255);
+    stroke(255);
+    strokeWeight(1);
+    textSize(32);
     textAlign(LEFT);
-    textFont('Century Gothic');
-    var frameRate = getFrameRate();
-    text("GENERATION " + population.gen, 75, 865);
-    text("TEMP " + bestCurrentPlayer.bodyTemp.toFixed(0), 380, 865);
-    text("FITNESS " + bestCurrentPlayer.fitness.toFixed(0), 660, 865);
-    text("ALIVE " + population.leftAlive, 950, 865);
+    
+    //var frameRate = getFrameRate();
+    text(population.gen, 1200, 22);
+    text(population.leftAlive, 1200, 86);
+    text(bestCurrentPlayer.bodyTemp.toFixed(0), 1200, 156);
 
+    textFont('Arial');
+    fill(0);
+    stroke(1);
+    textSize(16);
+    text("gen " , 1200, 50); 
+    text("alive " , 1200, 120);
+    text("temp " , 1200, 188);
+
+    fill(255,0,0);
+    stroke(255,0,0);
+    text("fitness " , 1200, 748);
+    fill(255);
+    stroke(255);
+    textSize(44);
+    textFont('Amatic SC');
+    text(bestCurrentPlayer.fitness.toFixed(0), 1200, 716);
+    
+    fill(0);
+    stroke(0);
+    textSize(16);
+    textFont('Arial');
+    text("score ", 1200, 884);
+    textSize(64);
+    fill(255);
+    stroke(255);
+    textFont('Amatic SC');
+    text(bestCurrentPlayer.score.toFixed(0), 1200, 845);
+
+    strokeWeight(0);
+    
+    
   }
 
 
