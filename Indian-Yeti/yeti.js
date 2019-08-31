@@ -10,10 +10,10 @@ class Yeti {
 
         this.velX = 0;
         this.velY = 0;
-        this.stepSize = 9; // 4
+        this.stepSize = 13; //15// 9; // 4
         this.velStepSize = this.stepSize / 20;
         this.fearFactor = 1;
-        this.visionDist = 240; // 125
+        this.visionDist = 600; //500; // 240
         this.heatVision = this.visionDist * 1.5; //
         this.seeSquared = sq(this.visionDist + 25); // 25 half camp
         this.seeSquaredHeat = sq(this.heatVision + 25); 
@@ -35,26 +35,29 @@ class Yeti {
 
         // genome PROJECT SPECIFIC HACK
         // Vision values
-        this.vision0 = 0; // 
-        this.vision1 = 0; // 
-        this.vision2 = 0; // 
-        this.vision3 = 0; // 
-        this.vision4 = 0; // 
-        this.vision5 = 0; //
-        this.vision6 = 0; // 
-        this.vision7 = 0; //
+        this.vision0 = 0;  
+        this.vision1 = 0;  
+        this.vision2 = 0;  
+        this.vision3 = 0; 
+        this.vision4 = 0;  
+        this.vision5 = 0; 
+        this.vision6 = 0; 
+        this.vision7 = 0; 
         this.vision8 = 0; 
-        //this.vision8 = 0; //
-        //this.vision9 = 0; 
-        //this.vision10 = 0; 
-        //this.vision11 = 0; 
+        
+        this.vision9 = 0; 
+        this.vision10 = 0; 
+        this.vision11 = 0; 
+        this.vision12 = 0;
+        this.vision13 = 0;
+        this.vision14 = 0;
+        this.vision15 = 0;
         
         // Response values
-        this.response0 = 0; // 
-        this.response1 = 0; // 
-        this.response2 = 0; // 
-        this.response3 = 0; // 
-
+        this.response0 = 0; 
+        this.response1 = 0; 
+        this.response2 = 0; 
+        this.response3 = 0; 
 
 
         //-----------------------------------------------------------------------
@@ -71,12 +74,12 @@ class Yeti {
 
         this.species = 0;
 
-        this.genomeInputs = 9;
+        this.genomeInputs = 10;
         this.genomeOutputs = 4;
 
         this.brain = new Genome(this.genomeInputs, this.genomeOutputs);
 
-        this.face = this.getFace(); //// bitwise OR conversion to integer trick
+        this.face = this.getFace(); //
         //this.textSize =  45 + random(20);
 
 
@@ -84,7 +87,7 @@ class Yeti {
 
     getFace(){
       var face = ".";
-      var faceChoice = random(7) | 0; 
+      var faceChoice = random(7) | 0; // bitwise OR conversion to integer trick
       switch(faceChoice){
         case 1:
             face = "0";
@@ -148,11 +151,11 @@ class Yeti {
     update() {
 
         this.lifespan++;
-        this.score += 1;
+        this.score += .25 * sq(this.migration); //1
         
         // cold impact
         this.bodyTemp = constrain(this.bodyTemp, 0, 200);
-        this.bodyTemp -= .55; // .25
+        this.bodyTemp -= .45; //.15
 
         // update army
         this.army.update();
@@ -168,7 +171,7 @@ class Yeti {
 
 
     move() {
-        this.velY += this.headwind * 3.5 *Math.sin(dayCounter/60) * Math.cos((this.x+dayCounter)/60); // with phased limiting
+        this.velY += this.headwind * 3.5 * Math.sin(dayCounter/60) * Math.cos((this.x+dayCounter)/60); // with phased limiting
         this.velX += this.headwind + .018 * Math.cos((this.x+dayCounter)/60);
 
 /*         if (!this.dead) {
@@ -216,6 +219,9 @@ class Yeti {
             this.dead = true;
             pauseBecauseDead = true;
           }
+          else{
+            this.bodyTemp = 200;
+          }
           
         }
 
@@ -229,7 +235,7 @@ class Yeti {
         if (!this.dead) {
           //this.velY += -this.stepSize / 10;
           this.y += -this.stepSize;
-          this.bodyTemp +=.35;
+          this.bodyTemp +=.12; // .35
         }
       }
 
@@ -237,7 +243,7 @@ class Yeti {
         if (!this.dead) {
           //this.velY += this.stepSize / 10;
           this.y += this.stepSize;
-          this.bodyTemp +=.35;
+          this.bodyTemp +=.12;
         }
       }  
 
@@ -245,7 +251,7 @@ class Yeti {
         if (!this.dead) {
           //this.velX += -this.stepSize / 10;
           this.x += -this.stepSize;
-          this.bodyTemp +=.35;
+          this.bodyTemp +=.12;
         }
       }
 
@@ -253,7 +259,7 @@ class Yeti {
         if (!this.dead) {
           //this.velX += this.stepSize / 10;
           this.x += this.stepSize;
-          this.bodyTemp +=.35;
+          this.bodyTemp +=.12;
         }
       }
 
@@ -279,19 +285,20 @@ class Yeti {
         var soldierArray = [];
         var distSold0X = this.army.soldiers[0].x - this.x;
         var distSold0Y = this.army.soldiers[0].y - this.y;
-        soldierArray[0] = [0, sq(distSold0X)+sq(distSold0Y), distSold0X, distSold0Y];
+        soldierArray[0] = [0, sq(distSold0X)+sq(distSold0Y), distSold0X, distSold0Y, this.army.soldiers[0].velX, this.army.soldiers[0].velY];
         
 
         var distSold1X = this.army.soldiers[1].x - this.x;
         var distSold1Y = this.army.soldiers[1].y - this.y;
-        soldierArray[1] = [1, sq(distSold1X)+sq(distSold1Y), distSold1X, distSold1Y];
+        soldierArray[1] = [1, sq(distSold1X)+sq(distSold1Y), distSold1X, distSold1Y, this.army.soldiers[1].velX, this.army.soldiers[1].velY];
         
 
         var distSold2X = this.army.soldiers[2].x - this.x;
         var distSold2Y = this.army.soldiers[2].y - this.y;
-        soldierArray[2] = [2, sq(distSold2X)+sq(distSold2Y), distSold2X, distSold2Y];
+        soldierArray[2] = [2, sq(distSold2X)+sq(distSold2Y), distSold2X, distSold2Y, this.army.soldiers[2].velX, this.army.soldiers[2].velY];
 
-        soldierArray.sort(this.soldierSort);
+        // // ** DO NOT SORT?? ** 
+        soldierArray.sort(this.soldierSort); // arranges them by distance
 
         var closest = soldierArray[0];
         var middle = soldierArray[1];
@@ -302,18 +309,24 @@ class Yeti {
         if (closest[1] > this.seeSquaredHeat){
           closest[2] = null;
           closest[3] = null;
+          closest[4] = null;
+          closest[5] = null;
         }
 
 
         if (middle[1] > this.seeSquaredHeat){
           middle[2] = null;
           middle[3] = null;
+          middle[4] = null;
+          middle[5] = null;
         }
         
 
         if (furthest[1] > this.seeSquaredHeat){
           furthest[2] = null;
           furthest[3] = null;
+          furthest[4] = null;
+          furthest[5] = null;
         }
 
 
@@ -325,19 +338,26 @@ class Yeti {
 
 
         // closest
-        this.vision[2] = map(closest[2], -this.heatVision, this.heatVision, -1, 1);
-        this.vision[3] = map(closest[3], -this.heatVision, this.heatVision, -1, 1);
+        this.vision[2] = map(closest[2], -this.heatVision, this.heatVision, -1, 1); // x pos
+        this.vision[3] = map(closest[3], -this.heatVision, this.heatVision, -1, 1); // y pos
+        // this.vision[4] = map(closest[4], -this.heatVision, this.heatVision, -1, 1); // x Vel
+        // this.vision[5] = map(closest[5], -this.heatVision, this.heatVision, -1, 1); // y Vel
 
         // middle
         this.vision[4] = map(middle[2], -this.heatVision, this.heatVision, -1, 1);
         this.vision[5] = map(middle[3], -this.heatVision, this.heatVision, -1, 1);
+        // this.vision[8] = map(middle[4], -this.heatVision, this.heatVision, -1, 1);
+        // this.vision[9] = map(middle[5], -this.heatVision, this.heatVision, -1, 1);
 
         // furthest
         this.vision[6] = map(furthest[2], -this.heatVision, this.heatVision, -1, 1);
         this.vision[7] = map(furthest[3], -this.heatVision, this.heatVision, -1, 1);
+        // this.vision[12] = map(furthest[4], -this.heatVision, this.heatVision, -1, 1);
+        // this.vision[13] = map(furthest[5], -this.heatVision, this.heatVision, -1, 1);
 
 
-        this.vision[8] = map(this.food, 0, 100, 0, 1);
+        this.vision[8] = map(this.food, 0, 100, 0, 1); // 14
+        this.vision[9] = map(this.bodyTemp, 0, 200, 0, 1); // 15
 
         this.vision0 = this.x;
         this.vision1 = this.y;
@@ -346,18 +366,28 @@ class Yeti {
         {
           this.vision2 = closest[2].toFixed(1);
           this.vision3 = closest[3].toFixed(1);
+          //this.vision4 = closest[4].toFixed(1);
+          //this.vision5 = closest[5].toFixed(1);
+
         } else {
           this.vision2 = "";
           this.vision3 = "";
+          //this.vision4 = "";
+          //this.vision5 = "";
         }
         
         if (middle[2]!=null)
         {
           this.vision4 = middle[2].toFixed(1);
           this.vision5 = middle[3].toFixed(1);
+          //this.vision8 = middle[4].toFixed(1);
+          //this.vision9 = middle[5].toFixed(1);
+
         } else {
           this.vision4 = "";
           this.vision5 = "";
+          //this.vision8 = "";
+          //this.vision9 = "";
         }
 
 
@@ -365,12 +395,17 @@ class Yeti {
         {
           this.vision6 = furthest[2].toFixed(1);
           this.vision7 = furthest[3].toFixed(1);
+          //this.vision12 = furthest[4].toFixed(1);
+          //this.vision13 = furthest[5].toFixed(1);
         } else {
           this.vision6 = "";
           this.vision7 = "";
+          //this.vision12 = "";
+          //this.vision13 = "";
         }
 
         this.vision8 = this.food;
+        this.vision9 = this.bodyTemp.toFixed(1);
 
     }
 
@@ -386,19 +421,24 @@ class Yeti {
         //get the output of the neural network
         this.decision = this.brain.feedForward(this.vision);
 
-        if (this.decision[0] > 0.6) {
+        // 0.6
+        // .4 for softmax
+
+        var limit = 0.40
+
+        if (this.decision[0] > limit) {
         this.up();
         }
 
-        if (this.decision[1] > 0.6) {
+        if (this.decision[1] > limit) {
         this.down();
         }
 
-        if (this.decision[2] > 0.6) {
+        if (this.decision[2] > limit) {
         this.left();
         }
 
-        if (this.decision[3] > 0.6) {
+        if (this.decision[3] > limit) {
         this.right();
         }
 
@@ -443,7 +483,7 @@ class Yeti {
     //-------------------------------------------
     //fot Genetic algorithm
     calculateFitness() {
-      this.fitness = 1 + this.score + this.lifespan / 20.0 + this.food * 5 + this.cave.food * 10 ;
+      this.fitness = 1 + this.score + pow(this.migration, 3) * (this.lifespan + this.food * 20 + this.cave.food * 20 );
       // this.fitness = 1 + sq(this.score) + this.lifespan / 50.0 + this.cave.food/20; // TOO HIGH 
     }
 

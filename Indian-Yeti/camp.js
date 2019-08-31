@@ -8,7 +8,7 @@ class Camp {
         this.y = 630;
 
         this.food = 1000;
-
+        this.sightline = 45000; // < p.seeSquared/6
         this.discovered = false; // starts false
         
     }
@@ -24,19 +24,20 @@ class Camp {
     detected(p){
                 
         var xDel = p.x - this.x;
+        
         var yDel = p.y - this.y;
 
-        if ((sq(xDel) + sq(yDel)) <= p.seeSquared) {
+        // 
+        if ((sq(xDel) + sq(yDel)) <= this.sightline) {
              if (!this.discovered){
                 this.discovered = true;
-                p.score += 5000 * p.migration; // 2000
+                p.score += 300 * pow(p.migration,3); // 10000 // 2000
 
                 // home cave
                 p.cave.homeSweetHome = false;
                 
              }
         }
-
         
     }
 
@@ -49,11 +50,10 @@ class Camp {
             if ((p.y > this.y - 25 )&&(p.y < this.y + 25)){
                 p.inCamp = true;
 
-            
-
                 if ((p.food < 100)&&(this.food > 1)) {
-                    p.score += 200 * p.migration;
-                    p.food+=5;
+                    p.score += 20 * pow(p.migration, 3); // 5 // 2000
+                    p.food+= 5;
+                    p.bodyTemp += 5;
                     this.food-=5;
                 }
 

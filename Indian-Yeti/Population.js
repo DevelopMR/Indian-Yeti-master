@@ -20,7 +20,9 @@ class Population {
 
       //this.players.push(new Player());
       this.players.push(new Yeti());
-      this.players[this.players.length - 1].brain.mutate(this.innovationHistory); //fullyConnect(this.innovationHistory);
+      this.players[this.players.length - 1].brain.multiLayerPrime(this.innovationHistory);
+      //this.players[this.players.length - 1].brain.mutate(this.innovationHistory); //fullyConnect(this.innovationHistory);
+
       this.players[this.players.length - 1].brain.generateNetwork();
 
     }
@@ -29,6 +31,7 @@ class Population {
 
   getCurrentBest() {
 
+    // MATT WHAT is the test here? Where are they they sorted?
     for (var i = 0; i < this.players.length; i++) {
       this.players[i].isBest = false; 
       if (!this.players[i].dead) {
@@ -40,7 +43,15 @@ class Population {
     this.players[0].isBest = true;
     return this.players[0];
 
+
+
+
+
+
   }
+
+
+
   updateAlive() {
       var firstShown = false;
       var bestYeti = new Yeti();

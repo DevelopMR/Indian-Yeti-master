@@ -20,13 +20,13 @@ var population;
 var speciesCount = 0; // global variable (yuck) for number of species
 var speed = 120; // 60
 
-var superSpeed = 1;
+var superSpeed = 1;  //  Integer. Number of population life cycles per game cycle
 var showBest = false; //true if only show the best of the previous generation
 var runBest = false; //true if replaying the best ever game
 var humanPlaying = false; //true if the user is playing
 
 var humanPlayer;
-
+var currentBest;
 
 var showBrain = false;
 var showBestEachGen = false;
@@ -238,10 +238,10 @@ function drawBrain() { //show the brain of whatever genome is currently showing
   //rect(1180, 0, canvas.width, canvas.height);
   image(panelBackgroundSprite, 1166, 0, 470, canvas.height);
 
-  var startX = 1430; 
+  var startX = 1250; 
   var startY = 60;
   var w = 450;
-  var h = 200;
+  var h = 380;
 
   if (runBest) {
     population.bestPlayer.brain.drawGenome(startX, startY, w, h);
@@ -252,7 +252,9 @@ function drawBrain() { //show the brain of whatever genome is currently showing
     genPlayerTemp.brain.drawGenome(startX, startY, w, h);
   } else {
    
-    population.players[0].brain.drawGenomeDetail(startX, startY, w, h, population.getCurrentBest());
+    currentBest = population.getCurrentBest();
+    currentBest.brain.drawGenomeDetail(startX, startY, w, h, currentBest);
+    //population.players[0].brain.drawGenomeDetail(startX, startY, w, h, population.getCurrentBest());
  
   }
 }

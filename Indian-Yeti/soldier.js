@@ -10,6 +10,8 @@ class Soldier{
 
         this.headwind = .01;
 
+        this.camp = c;
+
         this.x = c.x + 5 - random(20);
         this.y = c.y + 20 + random(40);
 
@@ -20,12 +22,13 @@ class Soldier{
 
         this.velX = (1 + random(4))*this.coinfFlip();
         this.velY = (1 + random(4))*this.coinfFlip();
+        this.maxVel = 5.4; //6 
 
 
         this.visible = false; // start false
         this.heatVisible = false;
         this.alert = false;
-        this.alertVel = .25;
+        this.alertVel = .20; // .25
         this.enemy = enemy;
 
         this.face = this.face(); 
@@ -107,17 +110,22 @@ class Soldier{
         if (this.heatVisible || this.visible){
 
             colorMode(HSB);
+            if (this.enemy.isBest){
+                hsl = "hsl(0 , 100%, 30%)";
+                col = color(hsl);
+            }
             fill(col);
             text(this.face, this.x - this.halfsize, this.y - this.halfsize);
             
         }
-         else {
+
+/*          else {
             colorMode(RGB);
             fill(220);
             text(this.face, this.x - this.halfsize, this.y - this.halfsize);
-
  
-        }
+            } */
+
         colorMode(RGB);
 
 
@@ -135,17 +143,18 @@ class Soldier{
 
             if (xDel < 0 ){
                 this.velX -= this.alertVel;
-            }
-            if (xDel > 0 ){
+            } else if (xDel > 0 ){
                 this.velX += this.alertVel;
             }
             if (yDel < 0 ){
                 this.velY -= this.alertVel;
-            }
-            if (yDel > 0 ){
+            } else if (yDel > 0 ){
                 this.velY += this.alertVel;
             }
             
+            // give enemy knowledge bonus/punishment
+            //this.enemy.score += .5; //2
+
         }
         
 
@@ -154,8 +163,8 @@ class Soldier{
         //this.velY += this.headwind* Math.sin(dayCounter);
         this.velX += this.headwind + .035 * Math.cos((this.x+dayCounter)/60);;
 
-        this.velX = constrain(this.velX, -6, 6); // -5 5
-        this.velY = constrain(this.velY, -6, 6); //
+        this.velX = constrain(this.velX, -this.maxVel, this.maxVel); 
+        this.velY = constrain(this.velY, -this.maxVel, this.maxVel); 
 
         this.x += this.velX;
         this.y += this.velY;
@@ -209,6 +218,29 @@ class Soldier{
         }
         if (this.y - this.halfsize < 0 || this.y + this.halfsize > 895) {
             this.velY = -this.velY;
+        }
+
+        // soldier at my cave 
+        if ((this.x>this.enemy.cave.x-20) && (this.x<this.enemy.cave.x+20)){
+            if ((this.y<this.enemy.cave.y+20) && (this.y>this.enemy.cave.y-20)){
+
+                // steals my food 
+                if (this.enemy.cave.food > 5){
+                    this.enemy.cave.food-=1; //2
+                    this.camp.food +=1; //2
+                }
+                else
+                {
+                    this.camp.food += this.enemy.cave.food;
+                    this.enemy.cave.food = 0;
+                }
+
+                // run away!!
+                this.velX = -this.velX;
+                this.velY = -this.velY;
+
+            }
+
         }
 
     }

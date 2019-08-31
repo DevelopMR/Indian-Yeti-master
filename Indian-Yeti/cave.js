@@ -8,8 +8,8 @@ class Cave {
         this.y = 240;
 
         
-        this.food = 100;
-
+        this.food = 10;
+        this.sightline = 45000; // < p.seeSquared/6
         this.homeSweetHome = true;
 
     }
@@ -23,13 +23,13 @@ class Cave {
         var xDel = p.x - this.x;
         var yDel = p.y - this.y;
 
-        // home sweet home bonus
-        if ((!this.homeSweetHome) && ((sq(xDel) + sq(yDel)) <= p.seeSquared)) 
+        // home sweet home bonus in tighter sightline 
+        if ((!this.homeSweetHome) && ((sq(xDel) + sq(yDel)) <= this.sightline)) 
         {
              //if (!this.homeSweetHome){
                 this.homeSweetHome = true;
-                p.score += 75000 * p.migration; // 2000
-                p.migration++;
+                p.score += 1000 * pow(p.migration,3); //100000 // 2000
+                p.migration ++;
              //}
         }
     }
@@ -45,8 +45,8 @@ class Cave {
                 p.inCave = true;
 
                 this.food += p.food;
-                p.score += 1 + p.food * 2000 * p.migration;
-                p.bodyTemp += 1;
+                p.score += 1 + p.food * 100 * pow(p.migration,3);  // 10000
+                p.bodyTemp += 5;
 
                 p.food = 0;
                 

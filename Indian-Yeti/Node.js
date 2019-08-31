@@ -12,16 +12,54 @@ class Node {
   //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
   //the node sends its output to the inputs of the nodes its connected to
   engage() {
-      if(this.layer != 0) { //no sigmoid for the inputs and bias
-        this.outputValue = this.sigmoid(this.inputSum);
+
+      //if((this.layer != 0)) { //no sigmoid for the inputs and bias
+      if((this.layer != 0)) { //no sigmoid for the inputs and bias
+
+        
+
+          // this.outputValue = this.sigmoid(this.inputSum, 1); // 4.9
+      
+        
+        // this.outputValue = Math.tanh(this.inputSum);
+      
+
+         if (this.layer != 2){ 
+          this.outputValue = this.sigmoid(this.inputSum, 5); // 4.9
+        } else 
+        {
+          this.outputValue = this.inputSum; 
+        } 
+        
+/*         // try tanh
+        if(this.layer == 4){
+          this.outputValue = this.sigmoid(this.inputSum);
+        }
+        else{
+          this.outputValue = Math.tanh(this.inputSum);
+        } */
+        
       }
 
-      for(var i = 0; i < this.outputConnections.length; i++) { //for each connection
-        if(this.outputConnections[i].enabled) { //dont do shit if not enabled
-          this.outputConnections[i].toNode.inputSum += this.outputConnections[i].weight * this.outputValue; //add the weighted output to the sum of the inputs of whatever node this node is connected to
+      // hacky
+      //if(this.layer != 3) {
+        for(var i = 0; i < this.outputConnections.length; i++) { //for each connection
+          
+            this.outputConnections[i].toNode.inputSum += this.outputConnections[i].weight * this.outputValue; //add the weighted output to the sum of the inputs of whatever node this node is connected to
+          
         }
-      }
+      //}
     }
+
+  engageNoSigmoid() {
+
+    for(var i = 0; i < this.outputConnections.length; i++) { 
+      //if(this.outputConnections[i].enabled) { 
+        this.outputConnections[i].toNode.inputSum += this.outputConnections[i].weight * this.outputValue;
+      //}
+    }
+  }
+
     //----------------------------------------------------------------------------------------------------------------------------------------
     //not used
    stepFunction(x) {
@@ -33,8 +71,10 @@ class Node {
     }
     //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //sigmoid activation function
-  sigmoid(x) {
-      return 1.0 / (1.0 + pow(Math.E, -4.9 * x)); //todo check pow
+  sigmoid(x, bias) {
+      //return 1.0 / (1.0 + pow(Math.E, -4.9 * x)); //todo check pow
+
+      return 1.0 / (1.0 + pow(Math.E, -bias*x)); // 1 = no gain ; higher gain approaches -1, 1 faster
     }
     //----------------------------------------------------------------------------------------------------------------------------------------------------------
     //returns whether this node connected to the parameter node

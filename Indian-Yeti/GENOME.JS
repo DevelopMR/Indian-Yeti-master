@@ -2,9 +2,20 @@ class Genome {
   constructor(inputs, outputs, crossover) {
     this.genes = []; //a list of connections between this.nodes which represent the NN
     this.nodes = [];
+    this.layers = 3; // number of layers
     this.inputs = inputs;
     this.outputs = outputs;
-    this.layers = 2;
+    this.layer0 = inputs; // nodes on layer0 : input/first layer
+    this.layer1 = 8; // nodes on layer1 : second layer
+    //this.layer2 = 10; // nodes on layer2 : third layer
+    //this.layer3 = 3; // nodes on layer3 : fourth layer SOFTMAX
+    this.layer2 = outputs; // nodes on layer4 : output layer
+    //this.startNodesCount = this.layer0 + this.layer1 + this.layer2 + this.layer3 + this.layer4; // 5 layer
+
+    this.startNodesCount = this.layer0 + this.layer1 + this.layer2; // 3 layer
+
+
+    
     this.nextNode = 0;
     // this.biasNode;
     this.network = []; //a list of the this.nodes in the order that they need to be considered in the NN
@@ -14,18 +25,80 @@ class Genome {
       return;
     }
 
+    // **** START 2 layer ***
+    // construct new genome
+    // layer0
+    for (var i = 0; i < this.inputs; i++) {
+      this.nodes.push(new Node(i));
+      this.nextNode++;
+      this.nodes[i].layer = 0;
+    }
+    // layer1
+    for (var i = 0; i < this.layer1; i++) {
+      this.nodes.push(new Node(i + this.layer0));
+      this.nodes[i + this.layer0].layer = 1;
+      this.nextNode++;
+    }
+
+    // layer2 / outputs
+    for (var i = 0; i < this.outputs; i++) {
+      this.nodes.push(new Node(i + this.layer0 + this.layer1));
+      this.nodes[i + this.layer0 + this.layer1].layer = 2;
+      this.nextNode++;
+    }
+/*
+     // layer3 / outputs
+    for (var i = 0; i < this.outputs; i++) {
+      this.nodes.push(new Node(i + this.layer0 + this.layer1 + this.layer2));
+      this.nodes[i + this.layer0 + this.layer1 + this.layer2].layer = 3;
+      this.nextNode++;
+    } */
+
+
+// **** END 2 layer ***
+
+
+
+
+/*  // **** START 5 layer ***
+    // construct new genome
+    // layer0
     for (var i = 0; i < this.inputs; i++) {
       this.nodes.push(new Node(i));
       this.nextNode++;
       this.nodes[i].layer = 0;
     }
 
-    //create output this.nodes
-    for (var i = 0; i < this.outputs; i++) {
-      this.nodes.push(new Node(i + this.inputs));
-      this.nodes[i + this.inputs].layer = 1;
+    // layer1
+    for (var i = 0; i < this.layer1; i++) {
+      this.nodes.push(new Node(i + this.layer0));
+      this.nodes[i + this.layer0].layer = 1;
       this.nextNode++;
     }
+
+    // layer2
+    for (var i = 0; i < this.layer2; i++) {
+      this.nodes.push(new Node(i + this.layer0 + this.layer1));
+      this.nodes[i + this.layer0 + this.layer1].layer = 2;
+      this.nextNode++;
+    }
+
+    // layer3
+    for (var i = 0; i < this.layer3; i++) {
+      this.nodes.push(new Node(i + this.layer0 + this.layer1 + this.layer2));
+      this.nodes[i + this.layer0 + this.layer1 + this.layer2].layer = 3;
+      this.nextNode++;
+    }
+
+    // outputs
+    // layer4
+    for (var i = 0; i < this.layer4; i++) {
+      this.nodes.push(new Node(i + this.layer0 + this.layer1 + this.layer2 + this.layer3));
+      this.nodes[i + this.layer0 + this.layer1 + this.layer2 + this.layer3].layer = 4;
+      this.nextNode++;
+    }
+    // **** END 5 layer ***
+ */
 
     this.nodes.push(new Node(this.nextNode)); //bias node
     this.biasNode = this.nextNode;
@@ -34,6 +107,78 @@ class Genome {
 
 
 
+  }
+
+  multiLayerPrime(innovationHistory){
+    // connect each node to all nodes of the layer below
+
+    // layer0 inputs => layer1
+    var l1Start = this.inputs;
+    var l1End = l1Start + this.layer1;
+    for (var i = 0; i < this.inputs; i++){
+      for (var j = 0; j < this.layer1; j++) {
+
+       //get the innovation number of the connection
+       //this will be a new number if no identical genome has mutated in the same way
+       var connectionInnovationNumber = this.getInnovationNumber(innovationHistory, this.nodes[i], this.nodes[j + l1Start]);
+       this.genes.push(new connectionGene(this.nodes[i], this.nodes[j+ l1Start], random(-1, 1), connectionInnovationNumber)); 
+
+      }
+    }
+
+    // bias node => layer1
+    for (var j = 0; j < this.layer1; j++) {
+
+      var connectionInnovationNumber = this.getInnovationNumber(innovationHistory, this.nodes[this.biasNode], this.nodes[j+ l1Start]);
+      this.genes.push(new connectionGene(this.nodes[this.biasNode], this.nodes[j+ l1Start], 1, connectionInnovationNumber));
+
+    }
+    
+
+    // layer1 => 2
+    var l2Start = l1End;
+    var l2End = l2Start + this.layer2;
+
+    for (var i = 0; i < this.layer1; i++){
+      for (var j = 0; j < this.layer2; j++) {
+
+       var connectionInnovationNumber = this.getInnovationNumber(innovationHistory, this.nodes[i + l1Start], this.nodes[j + l2Start]);
+       this.genes.push(new connectionGene(this.nodes[i + l1Start], this.nodes[j + l2Start], random(-1, 1), connectionInnovationNumber)); 
+
+      }
+    }
+/*
+    // layer2 => layer3
+    var l3Start = l2End;
+    var l3End = l3Start + this.layer3;
+
+    for (var i = 0; i < this.layer2; i++){
+      for (var j = 0; j < this.layer3; j++) {
+
+       var connectionInnovationNumber = this.getInnovationNumber(innovationHistory, this.nodes[i + l2Start], this.nodes[j + l3Start]);
+       this.genes.push(new connectionGene(this.nodes[i + l2Start], this.nodes[j + l3Start], random(-1, 1), connectionInnovationNumber)); 
+
+      }
+    }    
+
+ 
+    // layer3 => layer4 Outputs
+    var l4Start = l3End;
+    var l4End = l4Start + this.layer4;
+
+    for (var i = 0; i < this.layer3; i++){
+      for (var j = 0; j < this.layer4; j++) {
+
+       var connectionInnovationNumber = this.getInnovationNumber(innovationHistory, this.nodes[i + l3Start], this.nodes[j + l4Start]);
+       this.genes.push(new connectionGene(this.nodes[i + l3Start], this.nodes[j + l4Start], random(-1, 1), connectionInnovationNumber)); 
+
+      }
+    } 
+
+     */
+
+    
+    this.connectNodes();
   }
 
 
@@ -101,11 +246,64 @@ class Genome {
       this.network[i].engage();
     }
 
-    //the outputs are this.nodes[inputs] to this.nodes [inputs+outputs-1]
-    var outs = [];
-    for (var i = 0; i < this.outputs; i++) {
-      outs[i] = this.nodes[this.inputs + i].outputValue;
+    /* // ** START SOFTMAX TEST ****
+    // separate for layers
+    var first3Layers = this.layer0 + this.layer1 + this.layer2;
+    var first4Layers = this.layer0 + this.layer1 + this.layer2 + this.layer3;
+    for (var i = 0; i < first4Layers; i++) { //for each node in the network engage it(see node class for what this does)
+      this.network[i].engage();
     }
+
+    // softmax layer 3
+    var layer3Sum = 0;
+    var nodePos = this.layer0 + this.layer1 + this.layer2;
+    for (var i = 0; i < this.layer3; i++) {
+      //layer3Sum += Math.exp(this.nodes[nodePos + i].outputValue);
+      //layer3Sum += Math.exp(this.nodes[nodePos + i].inputSum);
+      layer3Sum += pow(Math.E, this.nodes[nodePos + i].outputValue);
+      
+
+    }
+    // softmax output
+    var outputStore = 0;
+    //var layerTot = 0;  // should sum to 1
+    for (var i = 0; i < this.layer3; i++) {
+      outputStore = this.nodes[nodePos + i].outputValue;
+      
+      this.nodes[nodePos + i].outputValue = pow(Math.E, outputStore) / layer3Sum;
+
+      //this.nodes[nodePos + i].outputValue = .1212;
+      //layerTot += this.nodes[nodePos + i].outputValue;
+      this.nodes[nodePos + i].engageNoSigmoid();
+    }
+    //console.log("layersTot: " + layerTot);
+
+    // engage final layer
+    for (var i = 0; i < this.outputs; i++) { 
+      this.nodes[first4Layers + i].engage();
+    }
+
+    // ** END SOFTMAX TEST **** */
+
+
+
+    //the outputs for the brain
+    var outs = [];
+    var outStart = this.startNodesCount - this.outputs;
+
+    var denomSum = 0;
+    for (var i = 0; i < this.outputs; i++) {
+      //outs[i] = this.nodes[outStart + i].outputValue;
+      denomSum += Math.exp(this.nodes[outStart + i].outputValue);
+    }
+
+
+
+    // softmax output
+    for (var i = 0; i < this.outputs; i++) {
+      outs[i] = Math.exp(this.nodes[outStart + i].outputValue) / denomSum;
+    }
+
 
     for (var i = 0; i < this.nodes.length; i++) { //reset all the this.nodes for the next feed forward
       this.nodes[i].inputSum = 0;
@@ -219,6 +417,11 @@ class Genome {
     if (this.nodes[r1].isConnectedTo(this.nodes[r2])) return true; //if the this.nodes are already connected
 
 
+    // Matt only allow connection between nearest layers
+    //if (this.nodes[r1].layer > this.nodes[r2].layer + 1) return true;
+    //if (this.nodes[r2].layer > this.nodes[r1].layer + 1) return true;
+
+    if (abs(this.nodes[r1].layer - this.nodes[r2].layer) > 2) return true;
 
     return false;
   }
@@ -291,28 +494,34 @@ class Genome {
 
 
     var rand1 = random(1);
-    if (rand1 < 0.8) { // 80% of the time mutate weights
+    if (rand1 < 0.8) { // .8 // 80% of the time mutate weights
 
       for (var i = 0; i < this.genes.length; i++) {
         this.genes[i].mutateWeight();
       }
     }
 
+
+
+    // MATT no new connections or nodes?
     //5% of the time add a new connection
     var rand2 = random(1);
-    //if (rand2 < 0.05) {
-      if (rand2 < 0.25) {
+    // .25
+      if (rand2 < 0.05) {
 
       this.addConnection(innovationHistory);
     }
 
     //1% of the time add a node
     var rand3 = random(1);
-    // if (rand3 < 0.01) {
-    if (rand3 < 0.04) {
-
+    
+      // .04
+    if (rand3 < 0.01) {
       this.addNode(innovationHistory);
     }
+
+
+
   }
 
   //--------------------------------------
@@ -504,7 +713,7 @@ class Genome {
         }
     
         //draw this.nodes last so they appear ontop of the connection lines
-        textSize(10);
+        textSize(8);
         textAlign(CENTER, CENTER);
         stroke(0);
         //textFont('Arial');
@@ -519,7 +728,18 @@ class Genome {
           fill(255,255,0);
           //text(nodeNumbers[i], nodePoses[i].x, nodePoses[i].y);  
           //text(nodeNumbers[i], nodePoses[i].y, nodePoses[i].x); // REVERSO
-          //text(nodeOutput[i], nodePoses[i].y, nodePoses[i].x);
+          if (nodeOutput[i]!=null){
+
+            if (nodeOutput[i] >=0 ){
+              text(nodeOutput[i].toString().substring(1,4), nodePoses[i].y, nodePoses[i].x+ 12);
+            }
+            else{
+              text( "-" + nodeOutput[i].toString().substring(2,5), nodePoses[i].y, nodePoses[i].x + 12);
+            }
+          
+
+          }
+          
           
 
         }
@@ -527,10 +747,10 @@ class Genome {
   // add player detail HACK
 
   try{
-    var tPosX = 1450; 
+    var tPosX = 1280; 
     var tPosY =  nodePoses[0].x - 42; // relate to first node
     var tPosY2 = nodePoses[0].x - 27;
-    var xSpacer = 18;
+    var xSpacer = 32;
   
     textAlign(CENTER);
     noStroke();
@@ -546,12 +766,22 @@ class Genome {
     text("Y", tPosX + 1 * xSpacer, tPosY);
     text("0X", tPosX + 2 * xSpacer, tPosY);
     text("0Y", tPosX + 3 * xSpacer, tPosY);
+    //text("VX", tPosX + 4 * xSpacer, tPosY);
+    //text("VY", tPosX + 5 * xSpacer, tPosY);
+
     text("1X", tPosX + 4 * xSpacer, tPosY);
     text("1Y", tPosX + 5 * xSpacer, tPosY);
+    //text("VX", tPosX + 8 * xSpacer, tPosY);
+    //text("VY", tPosX + 9 * xSpacer, tPosY);
+
     text("2X", tPosX + 6 * xSpacer, tPosY);
     text("2Y", tPosX + 7 * xSpacer, tPosY);
+    //text("VX", tPosX + 12 * xSpacer, tPosY);
+    //text("VY", tPosX + 13 * xSpacer, tPosY);
+
     text("F", tPosX + 8 * xSpacer, tPosY);
-    text("B", tPosX + 9 * xSpacer, tPosY);
+    text("T", tPosX + 9 * xSpacer, tPosY);
+    text("B", tPosX + 10 * xSpacer, tPosY);
 
     textSize(8);
     text(player.vision0.toFixed(1), tPosX, tPosY2);
@@ -560,9 +790,21 @@ class Genome {
     text(player.vision3, tPosX + 3 * xSpacer, tPosY2 + 12);
     text(player.vision4, tPosX + 4 * xSpacer, tPosY2);
     text(player.vision5, tPosX + 5 * xSpacer, tPosY2 + 12);
+
     text(player.vision6, tPosX + 6 * xSpacer, tPosY2);
     text(player.vision7, tPosX + 7 * xSpacer, tPosY2 + 12);
     text(player.vision8, tPosX + 8 * xSpacer, tPosY2);
+    text(player.vision9, tPosX + 9 * xSpacer, tPosY2 + 12);
+
+    //text(player.vision10, tPosX + 10 * xSpacer, tPosY2);
+    //text(player.vision11, tPosX + 11 * xSpacer, tPosY2 + 12);
+    //text(player.vision12, tPosX + 12 * xSpacer, tPosY2);
+    //text(player.vision13, tPosX + 13 * xSpacer, tPosY2 + 12);
+
+    //text(player.vision14, tPosX + 14 * xSpacer, tPosY2);
+    //text(player.vision15, tPosX + 15 * xSpacer, tPosY2 + 12);
+
+    text("1", tPosX + 10 * xSpacer, tPosY2); // bias
 
   }
   catch(err)
@@ -575,18 +817,19 @@ class Genome {
     var res2 = player.response2.toFixed(3);
     var res3 = player.response3.toFixed(3);
 
-    var xPos2 = 1470;
-    var yPos2 = nodePoses[nodePoses.length-1].x + 35; // relate to response nodes
+    var xPos2 = 1325;
+    var yPos2 = nodePoses[nodePoses.length-1].x + 42; // relate to response nodes
     //bestDuckLogYPos = yPos2 + 60; //global
   
-    var xSpacer = 40;
+    var xSpacer = 77;
 
     var baseColor = color(255);
     var hotColor = color(255,0,0);
+    var limit = .4; // get from yeti action
 
     fill(baseColor);
     
-    if (res0 > .6) {
+    if (res0 > limit) {
       fill(hotColor);
     }
     textSize(10);
@@ -596,7 +839,7 @@ class Genome {
     
 
     fill(baseColor);
-    if (res1 > .6) {
+    if (res1 > limit) {
       fill(hotColor);
     }
     textSize(10);
@@ -606,7 +849,7 @@ class Genome {
     
 
     fill(baseColor);
-    if (res2 > .6) {
+    if (res2 > limit) {
       fill(hotColor);
     }
     textSize(10);
@@ -616,7 +859,7 @@ class Genome {
     
 
     fill(baseColor);
-    if (res3 > .6) {
+    if (res3 > limit) {
       fill(hotColor);
     }
     textSize(10);
