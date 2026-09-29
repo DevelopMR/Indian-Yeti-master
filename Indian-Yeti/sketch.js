@@ -47,7 +47,7 @@ function preload() {
     soldierHeatSprite = loadImage("images/soldierHeat.png");
     soldierGhostSprite = loadImage("images/soldierGhost.png");
 
-    caveSprite = loadImage("images/cavePink.png");
+    caveSprite = loadImage("images/CavePink.png");
     campSprite = loadImage("images/camp.png");
     backgroundSprite = loadImage("images/IndianYetiBG.png");
     panelBackgroundSprite = loadImage("images/PanelBG3.png");
@@ -432,7 +432,7 @@ function keyPressed() {
 
     case 'P': //play
       humanPlaying = !humanPlaying;
-      humanPlayer = new Player();
+      humanPlayer = new Yeti();
       break;
   }
 
