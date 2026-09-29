@@ -4,7 +4,7 @@ A neuroevolution sandbox where a thousand yetis at a time learn to survive a Him
 
 [![The Perfect Indian Yeti Pt 3: Design Concepts](https://img.youtube.com/vi/Grt89CYOL0c/hqdefault.jpg)](https://youtu.be/Grt89CYOL0c)
 
-▶ **[Watch Part 3: Design Concepts on YouTube](https://youtu.be/Grt89CYOL0c)**. This is the last video in a three-part series. Part 1 covers the game framework and Part 2 covers tuning and training the yetibots.
+▶ **[Watch Part 3: Design Concepts on YouTube](https://youtu.be/Grt89CYOL0c)**. This is the last video in a three-part series. **[Part 1](https://youtu.be/RHPVHsNSL-0)** covers the game framework and **[Part 2](https://youtu.be/PMUfm47JVGY)** covers tuning and training the yetibots.
 
 ![A thousand yetis in the first generation, with soldiers swarming around the hidden camp](docs/indian-yeti-early.jpg)
 
@@ -45,7 +45,7 @@ The project is built on Code Bullet's JavaScript NEAT template, which I modified
 **Inputs (10):**
 
 | # | Input |
-|---|---|
+| --- | --- |
 | 1–2 | Yeti's own x and y position |
 | 3–8 | Relative x and y of each of the three soldiers, sorted nearest to farthest. These are blank when a soldier is outside heat vision. |
 | 9 | Food carried |
@@ -83,7 +83,7 @@ The VS Code **Live Server** extension also works. Opening `index.html` straight 
 ## Controls
 
 | Key | Action |
-|---|---|
+| --- | --- |
 | `=` / `-` | Speed up / slow down the frame rate |
 | `B` | Replay the best yeti of all time |
 | `G` | Replay the best yeti of each generation. `→` skips ahead. |
